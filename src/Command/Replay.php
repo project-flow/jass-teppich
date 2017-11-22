@@ -15,9 +15,6 @@ use function Jass\Hand\ordered;
 use Jass\Message\Message;
 use function Jass\Strategy\card;
 use function Jass\Strategy\cardStrategy;
-use function Jass\Strategy\firstCardOfTrick;
-use function Jass\Strategy\firstCardOfTrickStrategy;
-use function Jass\Strategy\playerAbilities;
 use function Jass\Trick\points;
 use function Jass\Trick\winningTurn;
 use Symfony\Component\Console\Command\Command;
@@ -64,8 +61,7 @@ class Replay extends Command
         $io->writeln('Players:');
         $io->listing(array_map(function (Player $player) {
             $strategies = array_map([$this, 'getClassBaseName'], $player->strategies);
-            $abilities = array_map([$this, 'getClassBaseName'], playerAbilities($player));
-            return $player->name . '; Strategies: ' . implode(', ', $strategies) . '; Abilities: ' . implode(', ', $abilities);
+            return $player->name . '; Strategies: ' . implode(', ', $strategies);
         }, $game->players));
 
         $player = 0;
@@ -76,13 +72,8 @@ class Replay extends Command
                 $io->writeln('Hand of ' . $game->players[$player]);
                 $io->listing(ordered($game->players[$player]->hand, $game->style->orderFunction()));
 
-                if ($game->currentTrick) {
-                    $card = card($game->players[$player], $game->currentTrick, $game->style);
-                    $strategy = cardStrategy($game->players[$player], $game->currentTrick, $game->style);
-                } else {
-                    $card = firstCardOfTrick($game->players[0], $game->style);
-                    $strategy = firstCardOfTrickStrategy($game->players[0], $game->style);
-                }
+                $card = card($game);
+                $strategy = cardStrategy($game);
                 $io->writeln('Card choosen by ' . $this->getClassBaseName($strategy) . ': ' . $card);
             }
         }, function(Game $game, Message $message) use ($io) {

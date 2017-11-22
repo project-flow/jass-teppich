@@ -7,13 +7,11 @@ use function Jass\CardSet\suits;
 use Jass\Entity\Card\Suit;
 use Jass\Message\StyleSetup;
 use Jass\MessageHandler;
-use Jass\Strategy\Azeige;
 use Jass\Strategy\Bock;
 use Jass\Strategy\Simple;
-use Jass\Strategy\TeamOnlySuits;
-use Jass\Strategy\Ustrumpfe;
-use Jass\Strategy\Verrueren;
-use Jass\Style\Trump;
+use Jass\Strategy\TeamMate;
+use Jass\Strategy\Trump;
+use Jass\Style\Trump as TrumpStyle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,10 +55,9 @@ class Style extends Command
         }
 
         $strategies = [
-            Verrueren::class,
-            Azeige::class,
+            Trump::class,
             Bock::class,
-            TeamOnlySuits::class,
+            TeamMate::class,
             Simple::class
         ];
 
@@ -71,9 +68,7 @@ class Style extends Command
                 $output->writeln('Unknown trump suit ' . $trumpSuit);
                 return;
             }
-            $message->style = new Trump($trumpSuit);
-
-            array_unshift($strategies, Ustrumpfe::class);
+            $message->style = new TrumpStyle($trumpSuit);
         } else {
             $message->style = new $className();
         }

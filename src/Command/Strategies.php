@@ -9,17 +9,15 @@ use function Jass\Game\isFinished;
 use function Jass\Game\teamPoints;
 use function Jass\Game\teams;
 use function Jass\Strategy\card;
-use function Jass\Strategy\firstCardOfTrick;
 use Jass\Entity\Game;
 use Jass\Message\PlayerSetup;
 use Jass\Message\StyleSetup;
 use Jass\Message\Turn;
 use Jass\MessageHandler;
-use Jass\Strategy\Azeige;
 use Jass\Strategy\Bock;
 use Jass\Strategy\Simple;
-use Jass\Strategy\TeamOnlySuits;
-use Jass\Strategy\Verrueren;
+use Jass\Strategy\TeamMate;
+use Jass\Strategy\Trump;
 use Jass\Style\TopDown;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -39,10 +37,9 @@ class Strategies extends Command
     {
         $start = microtime(true);
         $strategies = [
-            Verrueren::class,
-            Azeige::class,
+            Trump::class,
             Bock::class,
-            TeamOnlySuits::class,
+            TeamMate::class,
             Simple::class
         ];
 
@@ -82,11 +79,7 @@ class Strategies extends Command
             $game = $messageHandler->handle($game, $deal);
 
             do {
-                if ($game->currentTrick) {
-                    $card = card($game->currentPlayer, $game->currentTrick, $game->style);
-                } else {
-                    $card = firstCardOfTrick($game->currentPlayer, $game->style);
-                }
+                $card = card($game);
                 $message = new Turn();
                 $message->card = $card;
 
@@ -106,9 +99,14 @@ class Strategies extends Command
         $output->writeln('');
         $output->writeln('Average points in ' . $count . ' games');
         foreach ($points as $team => $pointInGames) {
+            $matched = array_filter($pointInGames, function($points) {
+                return $points == 257;
+            });
             $output->write($team);
             $output->write(': ');
-            $output->writeln(intval(array_sum($pointInGames) / count($pointInGames)));
+            $output->write(intval(array_sum($pointInGames) / count($pointInGames)));
+            $output->write(', matches: ');
+            $output->writeln(count($matched));
         }
         $end = microtime(true);
 

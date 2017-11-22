@@ -7,8 +7,6 @@ use App\Repository;
 use function Jass\Hand\ordered;
 use function Jass\Strategy\card;
 use function Jass\Strategy\cardStrategy;
-use function Jass\Strategy\firstCardOfTrick;
-use function Jass\Strategy\firstCardOfTrickStrategy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,13 +44,8 @@ class Hint extends Command
         $io->writeln('Hand:');
         $io->listing(ordered($game->currentPlayer->hand, $game->style->orderFunction()));
 
-        if ($game->currentTrick) {
-            $card = card($game->currentPlayer, $game->currentTrick, $game->style);
-            $strategy = cardStrategy($game->currentPlayer, $game->currentTrick, $game->style);
-        } else {
-            $card = firstCardOfTrick($game->currentPlayer, $game->style);
-            $strategy = firstCardOfTrickStrategy($game->currentPlayer, $game->style);
-        }
+        $card = card($game);
+        $strategy = cardStrategy($game);
 
         $strategyName = substr(get_class($strategy), strrpos(get_class($strategy), '\\') + 1);
         $io->writeln('Strategy: ' . $strategyName);

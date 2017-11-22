@@ -42,17 +42,16 @@ class Deal extends Command
         $cards = bySuitsAndValues(suits(), values());
         shuffle($cards);
 
-
         $message = new \Jass\Message\Deal();
         $message->cards = $cards;
 
-        $this->repository->recordMessage($gameName, $message);
 
         $messageHandler = new MessageHandler();
         $messageHandler->handle($game, $message);
 
-        $output->writeln('Cards dealt for game ' . $gameName);
+        $this->repository->recordMessage($gameName, $message);
 
+        $output->writeln('Cards dealt for game ' . $gameName);
     }
 
 }

@@ -13,7 +13,6 @@ use function Jass\Hand\last;
 use Jass\Message\Turn;
 use Jass\MessageHandler;
 use function Jass\Strategy\card;
-use function Jass\Strategy\firstCardOfTrick;
 use function Jass\Trick\winningTurn;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -71,20 +70,15 @@ class Play extends Command
         $io = new SymfonyStyle($input, $output);
         do {
             if (is_null($card)) {
-                if ($game->currentTrick) {
-                    $card = card($game->currentPlayer, $game->currentTrick, $game->style);
-                } else {
-                    $card = firstCardOfTrick($game->currentPlayer, $game->style);
-                }
+                $card = card($game);
             }
             $io->writeln($game->currentPlayer . ' plays ' . $card);
             $message = new Turn();
             $message->card = $card;
 
-            $this->repository->recordMessage($game->name, $message);
-
             $game = $messageHandler->handle($game, $message);
 
+            $this->repository->recordMessage($game->name, $message);
 
             if (!$game->currentTrick) {
                 /** @var Trick $finishedTrick */
