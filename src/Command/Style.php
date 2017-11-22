@@ -3,13 +3,17 @@
 namespace App\Command;
 
 use App\Repository;
+use function Jass\CardSet\suits;
+use Jass\Entity\Card\Suit;
 use Jass\Message\StyleSetup;
 use Jass\MessageHandler;
 use Jass\Strategy\Azeige;
 use Jass\Strategy\Bock;
 use Jass\Strategy\Simple;
 use Jass\Strategy\TeamOnlySuits;
+use Jass\Strategy\Ustrumpfe;
 use Jass\Strategy\Verrueren;
+use Jass\Style\Trump;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,6 +40,7 @@ class Style extends Command
         $this->setName('jass:style')->setDescription('Sets the style of the game');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
         $this->addArgument('style', InputArgument::OPTIONAL, 'Style of the game', 'topDown');
+        $this->addArgument('suit', InputArgument::OPTIONAL, 'Suit if trump is choosen', SUIT::SHIELD);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -43,7 +48,7 @@ class Style extends Command
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
 
-        $styleName = $input->getArgument('style');
+        $styleName = strtolower($input->getArgument('style'));
 
         $className = 'Jass\\Style\\' . ucfirst($styleName);
         if (!class_exists($className)) {
@@ -60,7 +65,18 @@ class Style extends Command
         ];
 
         $message = new StyleSetup();
-        $message->style = new $className();
+        if ($styleName == 'trump') {
+            $trumpSuit = $input->getArgument('suit');
+            if (!in_array($trumpSuit, suits())) {
+                $output->writeln('Unknown trump suit ' . $trumpSuit);
+                return;
+            }
+            $message->style = new Trump($trumpSuit);
+
+            array_unshift($strategies, Ustrumpfe::class);
+        } else {
+            $message->style = new $className();
+        }
         $message->strategies = [
             $strategies,
             [Simple::class],

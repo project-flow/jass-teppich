@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Repository;
 use function Jass\Hand\ordered;
+use Jass\Style\TopDown;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,8 @@ class Hand extends Command
 
         $io = new SymfonyStyle($input, $output);
         $io->writeln('Hand of player ' . $game->currentPlayer);
-        $io->listing(ordered($game->currentPlayer->hand, $game->style->orderFunction()));
+        $style = $game->style ?? new TopDown();
+        $io->listing(ordered($game->currentPlayer->hand, $style->orderFunction()));
     }
 
 }
