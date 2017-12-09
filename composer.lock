@@ -1654,12 +1654,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/urbanetter/jassy.git",
-                "reference": "b280d1709abf51ad7da0a11365b38c42aa8bfae2"
+                "reference": "efda30a5fdc8d0481a501e0fb27ac3573cb57004"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/urbanetter/jassy/zipball/b280d1709abf51ad7da0a11365b38c42aa8bfae2",
-                "reference": "b280d1709abf51ad7da0a11365b38c42aa8bfae2",
+                "url": "https://api.github.com/repos/urbanetter/jassy/zipball/efda30a5fdc8d0481a501e0fb27ac3573cb57004",
+                "reference": "efda30a5fdc8d0481a501e0fb27ac3573cb57004",
                 "shasum": ""
             },
             "require-dev": {
@@ -1698,7 +1698,7 @@
                 "source": "https://github.com/urbanetter/jassy/tree/master",
                 "issues": "https://github.com/urbanetter/jassy/issues"
             },
-            "time": "2017-11-22 20:42:58"
+            "time": "2017-12-09 19:39:06"
         }
     ],
     "packages-dev": [
