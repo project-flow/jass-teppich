@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Repository;
 use function Jass\CardSet\jassSet;
 use Jass\Entity\Card;
+use Jass\Entity\Trick;
+use function Jass\Game\isReady;
+use function Jass\Hand\last;
+use function Jass\Hand\ordered;
 use Jass\Message\Deal;
 use Jass\Message\PlayerSetup;
 use Jass\Message\StyleSetup;
@@ -19,7 +23,6 @@ use Jass\Strategy\Trump;
 use Jass\Style\BottomUp;
 use Jass\Style\TopDown;
 use Jass\Style\Trump as TrumpStyle;
-use function Jass\Trick\playedCards;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -33,7 +36,7 @@ class JassWeCanController extends Controller
 {
     /**
      * @Route("/", name="create")
-     * @Method({"POST"})
+     * @Method({"POST", "OPTIONS"})
      * @param Repository $repository
      * @return JsonResponse
      */
@@ -64,19 +67,12 @@ class JassWeCanController extends Controller
 
         $repository->recordMessage($name, $deal);
 
-        $game = $repository->loadGame($name);
-
-        $data = [
-            'id' => $game->name,
-            'hand' => $game->players[0]->hand
-        ];
-
-        return new JsonResponse($data);
+        return $this->info($name, $repository);
     }
 
     /**
      * @Route("/{id}", name="info")
-     * @Method({"GET"})
+     * @Method({"GET", "OPTIONS"})
      * @param string $id
      * @param Repository $repository
      * @return JsonResponse
@@ -85,25 +81,38 @@ class JassWeCanController extends Controller
     {
         $game = $repository->loadGame($id);
 
+        $orderFunction = $game->style ? $game->style->orderFunction() : (new TopDown())->orderFunction();
+
         $data = [
             'id' => $game->name,
-            'hand' => $game->players[0]->hand
+            'hand' => array_reverse(ordered($game->players[0]->hand, $orderFunction)),
+            'ready' => isReady($game),
+            'trickNumber' => count($game->playedTricks) + 1,
         ];
 
         if ($game->style) {
             $data['style'] = $game->style->name;
         }
 
-        if ($game->currentTrick) {
-            $data['trick'] = playedCards($game->currentTrick);
-        }
+        $data['trick'] = $this->trickCards($game->currentTrick, $game->players);
 
-        return new JsonResponse($data);
+        return new JsonResponse($data, 200, ['Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'content-type']);
+    }
+
+    private function trickCards(?Trick $trick, $players) {
+        $trickCards = [null, null, null, null];
+        if ($trick) {
+            foreach ($trick->turns as $turn) {
+                $index = array_search($turn->player, $players);
+                $trickCards[$index] = $turn->card;
+            }
+        }
+        return $trickCards;
     }
 
     /**
      * @Route("/{id}", name="play")
-     * @Method({"POST"})
+     * @Method({"POST", "OPTIONS"})
      * @param string $id
      * @param Request $request
      * @param Repository $repository
@@ -111,41 +120,53 @@ class JassWeCanController extends Controller
      */
     public function play(string $id, Request $request, Repository $repository)
     {
+        if ($request->getMethod() === 'OPTIONS') {
+            return $this->info($id, $repository);
+        }
+
         $input = json_decode($request->getContent(), true);
+        $messageHandler = new MessageHandler();
+        $game = $repository->loadGame($id);
 
         $card = Card::from($input['card']['suit'], $input['card']['value']);
 
         $playCard = new Turn();
         $playCard->card = $card;
 
+        $playedTricks = count($game->playedTricks);
+
+        $messageHandler->handle($game, $playCard);
         $repository->recordMessage($id, $playCard);
-        $game = $repository->loadGame($id);
 
 
-        $messageHandler = new MessageHandler();
         $playedCards = [];
         do {
             $turn = new Turn();
             $turn->card = \Jass\Strategy\card($game);
             $messageHandler->handle($game, $turn);
             $repository->recordMessage($id, $turn);
+
             $playedCards[] = $turn->card;
         } while ($game->currentPlayer !== $game->players[0]);
 
         $strategy = cardStrategy($game);
 
         $data = [
-            'playedCards' => $playedCards,
+            'trick' => $this->trickCards($game->currentTrick, $game->players),
             'hint' => $strategy->chooseCard($game),
             'hintReason' => get_class($strategy),
         ];
 
-        return new JsonResponse($data);
+        if ($playedTricks !== count($game->playedTricks)) {
+            $data['lastTrick'] = $this->trickCards(last($game->playedTricks), $game->players);
+        }
+
+        return new JsonResponse($data, 200, ['Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'content-type']);
     }
 
     /**
      * @Route("/{id}/style", name="style")
-     * @Method({"POST"})
+     * @Method({"POST", "OPTIONS"})
      * @param string $id
      * @param Request $request
      * @param Repository $repository
@@ -153,6 +174,10 @@ class JassWeCanController extends Controller
      */
     public function style(string $id, Request $request, Repository $repository)
     {
+        if ($request->getMethod() === 'OPTIONS') {
+            return $this->info($id, $repository);
+        }
+
         $input = json_decode($request->getContent(), true);
 
         list($first, $second) = explode(' ', $input['style']);
