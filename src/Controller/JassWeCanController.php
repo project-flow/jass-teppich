@@ -6,7 +6,10 @@ use App\Repository;
 use function Jass\CardSet\jassSet;
 use Jass\Entity\Card;
 use Jass\Entity\Trick;
+use function Jass\Game\isFinished;
 use function Jass\Game\isReady;
+use function Jass\Game\teamPoints;
+use function Jass\Game\teams;
 use function Jass\Hand\last;
 use function Jass\Hand\ordered;
 use Jass\Message\Deal;
@@ -83,11 +86,20 @@ class JassWeCanController extends Controller
 
         $orderFunction = $game->style ? $game->style->orderFunction() : (new TopDown())->orderFunction();
 
+        $teams = [];
+        foreach (teams($game) as $team) {
+            $teams[] = [
+                'name' => $team,
+                'points' => teamPoints($team, $game)
+            ];
+        }
+
         $data = [
             'id' => $game->name,
             'hand' => array_reverse(ordered($game->players[0]->hand, $orderFunction)),
             'ready' => isReady($game),
             'trickNumber' => count($game->playedTricks) + 1,
+            'teams' => $teams,
         ];
 
         if ($game->style) {
@@ -135,31 +147,40 @@ class JassWeCanController extends Controller
 
         $playedTricks = count($game->playedTricks);
 
-        $messageHandler->handle($game, $playCard);
+        $game = $messageHandler->handle($game, $playCard);
         $repository->recordMessage($id, $playCard);
 
-
-        $playedCards = [];
-        do {
+        while (!isFinished($game) && $game->currentPlayer !== $game->players[0]) {
             $turn = new Turn();
             $turn->card = \Jass\Strategy\card($game);
             $messageHandler->handle($game, $turn);
             $repository->recordMessage($id, $turn);
+        }
 
-            $playedCards[] = $turn->card;
-        } while ($game->currentPlayer !== $game->players[0]);
-
-        $strategy = cardStrategy($game);
-
-        $data = [
-            'trick' => $this->trickCards($game->currentTrick, $game->players),
-            'hint' => $strategy->chooseCard($game),
-            'hintReason' => get_class($strategy),
-        ];
+        $data = [];
+        $data['trick'] = $this->trickCards($game->currentTrick, $game->players);
 
         if ($playedTricks !== count($game->playedTricks)) {
-            $data['lastTrick'] = $this->trickCards(last($game->playedTricks), $game->players);
+            /** @var Trick $lastTrick */
+            $lastTrick = last($game->playedTricks);
+            $data['lastTrick'] = $this->trickCards($lastTrick, $game->players);
         }
+
+        if (!isFinished($game)) {
+            $strategy = cardStrategy($game);
+            $data['hint'] = $strategy->chooseCard($game);
+            $data['hintReason'] = get_class($strategy);
+        }
+
+        $teams = [];
+        foreach (teams($game) as $team) {
+            $teams[] = [
+                'name' => $team,
+                'points' => teamPoints($team, $game)
+            ];
+        }
+        $data['teams'] = $teams;
+
 
         return new JsonResponse($data, 200, ['Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'content-type']);
     }
