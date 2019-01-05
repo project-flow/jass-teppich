@@ -58,7 +58,7 @@ class Play extends Command
         if (!in_array($until, $validUntils)) {
             throw new \InvalidArgumentException('Until has to be one of ' . implode(', ', $validUntils));
         }
-        $manualPlayer = $game->currentPlayer;
+        $manualPlayer = $game->players[0];
 
         $cardName = strtolower($input->getArgument('card'));
         $card = null;
