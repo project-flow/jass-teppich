@@ -1,36 +1,30 @@
 {
-    "doctrine/annotations": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "cb4152ebcadbe620ea2261da1a1c5a9b8cea7672"
-        }
-    },
-    "doctrine/cache": {
-        "version": "v1.7.1"
-    },
-    "doctrine/collections": {
-        "version": "v1.5.0"
-    },
-    "doctrine/common": {
-        "version": "v2.8.1"
+    "dnoegel/php-xdg-base-dir": {
+        "version": "0.1"
     },
     "doctrine/inflector": {
         "version": "v1.2.0"
     },
-    "doctrine/lexer": {
-        "version": "v1.0.1"
+    "jakub-onderka/php-console-color": {
+        "version": "v0.2"
     },
-    "sensio/framework-extra-bundle": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
-        }
+    "jakub-onderka/php-console-highlighter": {
+        "version": "v0.4"
+    },
+    "nikic/php-parser": {
+        "version": "v4.1.1"
+    },
+    "psy/psysh": {
+        "version": "v0.9.9"
+    },
+    "symfony/cache-contracts": {
+        "version": "v1.1.1"
+    },
+    "symfony/event-dispatcher-contracts": {
+        "version": "v1.1.1"
+    },
+    "symfony/expression-language": {
+        "version": "v4.2.4"
     },
     "symfony/maker-bundle": {
         "version": "1.0",
@@ -41,7 +35,34 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/mime": {
+        "version": "v4.3.1"
+    },
+    "symfony/polyfill-ctype": {
+        "version": "v1.10.0"
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.10.0"
+    },
+    "symfony/polyfill-php73": {
+        "version": "v1.11.0"
+    },
+    "symfony/service-contracts": {
+        "version": "v1.1.2"
+    },
+    "symfony/var-dumper": {
+        "version": "v4.2.4"
+    },
+    "symfony/var-exporter": {
+        "version": "v4.2.1"
+    },
     "symfony/yaml": {
         "version": "v4.0.1"
+    },
+    "theofidry/psysh-bundle": {
+        "version": "v3.5.1"
     }
 }
