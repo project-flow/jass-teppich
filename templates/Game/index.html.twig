@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<section class="section ">
+    <div class="columns">
+        {% if trick %}
+        <div class="column">
+            <div class="columns is-mobile">
+                <div class="column has-text-right">
+                    <h3 class="subtitle">Franz</h3>
+                    <h2 class="title">{{ trick[0]|raw }}</h2>
+                </div>
+                <div class="column">
+                    <h3 class="subtitle">Heidi</h3>
+                    <h2 class="title">{{ trick[1]|raw }}</h2>
+                </div>
+            </div>
+            <div class="columns is-mobile">
+                <div class="column has-text-right">
+                    <h2 class="title">{{ trick[3]|raw }}</h2>
+                    <h3 class="subtitle">Hans</h3>
+                </div>
+                <div class="column has-text-left">
+                    <h2 class="title">{{ trick[2]|raw }}</h2>
+                    <h3 class="subtitle">Frieda</h3>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if info %}
+        <div class="column">
+            <p>{{ info.style }}</p>
+            {% if info.finished %}
+            <p>Game is finiched</p>
+            {% else %}
+            <p>Trick {{ info.trickNumber }} of 9</p>
+            {% endif %}
+            <p>Franz & Frieda: {{ info.team1points }} Points</p>
+            <p>Heidi & Heinz: {{ info.team2points }} Points</p>
+        </div>
+        {% endif %}
+        {% if style %}
+        <div class="column">
+            <a href="{{ path('style', {'id': id, 'style': 'top'}) }}" class="button">Top down</a>
+            <a href="{{ path('style', {'id': id, 'style': 'bottom'}) }}" class="button">Bottom up</a>
+            <a href="{{ path('style', {'id': id, 'style': 'rose'}) }}" class="button">Trump Rose</a>
+            <a href="{{ path('style', {'id': id, 'style': 'bell'}) }}" class="button">Trump Bell</a>
+            <a href="{{ path('style', {'id': id, 'style': 'oak'}) }}" class="button">Trump Oak</a>
+            <a href="{{ path('style', {'id': id, 'style': 'shield'}) }}" class="button">Trump Shield</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+    {% if trickInfo is defined and trickInfo %}
+        <section class="section has-background-info">
+            <h3 class="subtitle">Trick</h3>
+            <p>Trick winner is {{ trickInfo.winner }} with {{ trickInfo.winningCard }}</p>
+            <p>The team wins {{ trickInfo.points }} Points.</p>
+            <p>
+                <a href="{{ path('game', {'id': id}) }}" class="button">Cards to {{ trickInfo.winner }}</a>
+            </p>
+        </section>
+    {% elseif hand %}
+        <section class="section has-background-info">
+            <h3 class="subtitle">Your cards</h3>
+            <div class="level is-mobile">
+                {% for card in hand %}
+                <div class="level-item">
+                    <a class="button" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}">
+                        {{ card }}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

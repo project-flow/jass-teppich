@@ -37,8 +37,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class JassWeCanController extends AbstractController
 {
     /**
-     * @Route("/", name="create")
-     * @Method({"POST", "OPTIONS"})
+     * @Route("/", name="jwc_create", methods={"POST"})
      * @param Repository $repository
      * @return JsonResponse
      */
@@ -73,8 +72,7 @@ class JassWeCanController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="info")
-     * @Method({"GET", "OPTIONS"})
+     * @Route("/{id}", name="jwc_info", methods={"POST"})
      * @param string $id
      * @param Repository $repository
      * @return JsonResponse
@@ -122,8 +120,7 @@ class JassWeCanController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="play")
-     * @Method({"POST", "OPTIONS"})
+     * @Route("/{id}", name="jwc_play", methods={"POST"})
      * @param string $id
      * @param Request $request
      * @param Repository $repository
@@ -185,8 +182,7 @@ class JassWeCanController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/style", name="style")
-     * @Method({"POST", "OPTIONS"})
+     * @Route("/{id}/style", name="jwc_style")
      * @param string $id
      * @param Request $request
      * @param Repository $repository
