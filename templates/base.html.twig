@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {{ encore_entry_link_tags('app') }}
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <section class="hero is-primary">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Jasse
+                    </h1>
+                </div>
+            </div>
+        </section>
+        {% block body %}{% endblock %}
+        {{ encore_entry_script_tags('app') }}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

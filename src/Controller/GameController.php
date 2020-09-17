@@ -30,7 +30,6 @@ use function Jass\Trick\isFinished;
 use function Jass\Trick\playedCards;
 use function Jass\Trick\playerTurn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use function Jass\Trick\winningTurn;
 
@@ -122,10 +121,6 @@ class GameController extends AbstractController
         $messageHandler = new MessageHandler();
         $game = $repository->loadGame($id);
 
-        if (!$game->playedTricks) {
-            return $this->redirectToRoute('game', ['id' => $id]);
-        }
-
         while ($game->currentTrick && !isFinished($game->currentTrick)) {
             $turn = new Turn();
             $turn->card = \Jass\Strategy\card($game);
@@ -144,6 +139,7 @@ class GameController extends AbstractController
             'winningCard' => $winningTurn->card
         ];
 
+        $cards = [];
         foreach ($game->players as $player) {
             $turn = playerTurn($trick, $player);
             if ($turn) {
@@ -158,6 +154,7 @@ class GameController extends AbstractController
             'trickNumber' => $game->playedTricks ? count($game->playedTricks) : 1,
             'team1points' => teamPoints($game->players[0]->team, $game),
             'team2points' => teamPoints($game->players[1]->team, $game),
+            'finished' => \Jass\Game\isFinished($game)
         ];
 
         return $this->render('Game/index.html.twig', [
@@ -254,6 +251,8 @@ class GameController extends AbstractController
             'info' => $info,
             'style' => false,
             'hand' => ordered($game->players[0]->hand, $game->style->orderFunction()),
+            'hint' => \Jass\Strategy\card($game),
+            'player' => $game->currentPlayer->name
         ]);
     }
 

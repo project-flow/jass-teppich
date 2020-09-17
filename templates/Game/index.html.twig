@@ -51,7 +51,7 @@
     </div>
 </section>
     {% if trickInfo is defined and trickInfo %}
-        <section class="section has-background-info">
+        <section class="section has-background-info text-white">
             <h3 class="subtitle">Trick</h3>
             <p>Trick winner is {{ trickInfo.winner }} with {{ trickInfo.winningCard }}</p>
             <p>The team wins {{ trickInfo.points }} Points.</p>
@@ -60,8 +60,8 @@
             </p>
         </section>
     {% elseif hand %}
-        <section class="section has-background-info">
-            <h3 class="subtitle">Your cards</h3>
+        <section class="section has-background-info text-white">
+            <h3 class="subtitle">Cards of {{ player }}</h3>
             <div class="level is-mobile">
                 {% for card in hand %}
                 <div class="level-item">
@@ -71,6 +71,11 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if hint is defined %}
+            <div>
+                Computer suggests {{ hint }} because {{ hint.hint }}
+            </div>
+            {% endif %}
         </section>
     {% endif %}
 {% endblock %}
