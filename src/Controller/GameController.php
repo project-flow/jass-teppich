@@ -201,7 +201,8 @@ class GameController extends AbstractController
                 'trick' => false,
                 'info' => false,
                 'style' => true,
-                'hand' => ordered($game->players[0]->hand, $topDown->orderFunction())
+                'hand' => ordered($game->players[0]->hand, $topDown->orderFunction()),
+                'player' => $game->players[0]->name
             ]);
         }
 
@@ -236,12 +237,13 @@ class GameController extends AbstractController
         } else {
             $trick = new Trick();
         }
+        $cards = [];
         foreach ($game->players as $player) {
             $turn = playerTurn($trick, $player);
             if ($turn) {
                 $cards[] = $turn->card;
             } else {
-                $cards[] = '&nbsp;';
+                $cards[] = null;
             }
         }
 

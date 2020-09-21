@@ -7,21 +7,21 @@
             <div class="columns is-mobile">
                 <div class="column has-text-right">
                     <h3 class="subtitle">Franz</h3>
-                    <h2 class="title">{{ trick[0]|raw }}</h2>
+                    <div class="is-pulled-right card {{ trick[0]|default('empty') }}"></div>
                 </div>
                 <div class="column">
                     <h3 class="subtitle">Heidi</h3>
-                    <h2 class="title">{{ trick[1]|raw }}</h2>
+                    <div class="card {{ trick[1]|default('empty') }}"></div>
                 </div>
             </div>
             <div class="columns is-mobile">
                 <div class="column has-text-right">
-                    <h2 class="title">{{ trick[3]|raw }}</h2>
                     <h3 class="subtitle">Hans</h3>
+                    <div class="is-pulled-right card {{ trick[3]|default('empty') }}"></div>
                 </div>
                 <div class="column has-text-left">
-                    <h2 class="title">{{ trick[2]|raw }}</h2>
                     <h3 class="subtitle">Frieda</h3>
+                    <div class="card {{ trick[2]|default('empty') }}"></div>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
         <div class="column">
             <p>{{ info.style }}</p>
             {% if info.finished %}
-            <p>Game is finiched</p>
+            <p>Game is finished</p>
             {% else %}
             <p>Trick {{ info.trickNumber }} of 9</p>
             {% endif %}
@@ -65,8 +65,8 @@
             <div class="level is-mobile">
                 {% for card in hand %}
                 <div class="level-item">
-                    <a class="button" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}">
-                        {{ card }}
+                    <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}">
+                        &nbsp;
                     </a>
                 </div>
                 {% endfor %}

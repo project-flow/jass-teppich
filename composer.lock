@@ -2736,12 +2736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/urbanetter/jassy.git",
-                "reference": "535ce37860bca1ede129d6436aca014655a4b6f9"
+                "reference": "98909f21f8f99442960da02b017fb27484382739"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/urbanetter/jassy/zipball/535ce37860bca1ede129d6436aca014655a4b6f9",
-                "reference": "535ce37860bca1ede129d6436aca014655a4b6f9",
+                "url": "https://api.github.com/repos/urbanetter/jassy/zipball/98909f21f8f99442960da02b017fb27484382739",
+                "reference": "98909f21f8f99442960da02b017fb27484382739",
                 "shasum": ""
             },
             "require-dev": {
@@ -2781,7 +2781,7 @@
                 "source": "https://github.com/urbanetter/jassy/tree/master",
                 "issues": "https://github.com/urbanetter/jassy/issues"
             },
-            "time": "2020-09-17T20:46:54+00:00"
+            "time": "2020-09-21T18:55:14+00:00"
         }
     ],
     "packages-dev": [
@@ -3126,16 +3126,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.9.1",
+            "version": "v4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "88e519766fc58bd46b8265561fb79b54e2e00b28"
+                "reference": "1c13d05035deff45f1230ca68bd7d74d621762d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/88e519766fc58bd46b8265561fb79b54e2e00b28",
-                "reference": "88e519766fc58bd46b8265561fb79b54e2e00b28",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/1c13d05035deff45f1230ca68bd7d74d621762d9",
+                "reference": "1c13d05035deff45f1230ca68bd7d74d621762d9",
                 "shasum": ""
             },
             "require": {
@@ -3174,7 +3174,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2020-08-30T16:15:20+00:00"
+            "time": "2020-09-19T14:52:48+00:00"
         },
         {
             "name": "phar-io/manifest",

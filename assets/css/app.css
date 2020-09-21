@@ -1,0 +1,52 @@
+.card {
+    background-image: url(../images/cards.jpg);
+    overflow: hidden;
+    width: 89px;
+    height: 143px;
+}
+
+.card.empty {
+    background-image: none;
+}
+
+.card.oak {
+    background-position-y: 0;
+}
+.card.rose {
+    background-position-y: -143px;
+}
+.card.bell {
+    background-position-y: -286px;
+}
+.card.shield {
+    background-position-y: -429px;
+}
+
+.card.six {
+    background-position-x: 0;
+}
+.card.seven {
+    background-position-x: -89px;
+}
+.card.eight {
+    background-position-x: -178px;
+}
+.card.nine {
+    background-position-x: -267px;
+}
+.card.ten {
+    background-position-x: -356px;
+}
+.card.jack {
+    background-position-x: -445px;
+}
+.card.queen {
+    background-position-x: -534px;
+}
+.card.king {
+    background-position-x: -623px;
+}
+.card.ace {
+    background-position-x: -712px;
+}
+
