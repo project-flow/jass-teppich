@@ -36,6 +36,9 @@
             {% endif %}
             <p>Franz & Frieda: {{ info.team1points }} Points</p>
             <p>Heidi & Heinz: {{ info.team2points }} Points</p>
+S            {% if info.finished %}
+            <p><a href="{{ path('index') }}" class="button">New game</a> </p>
+            {% endif %}
         </div>
         {% endif %}
         {% if style %}
@@ -62,13 +65,9 @@
     {% elseif hand %}
         <section class="section has-background-info text-white">
             <h3 class="subtitle">Cards of {{ player }}</h3>
-            <div class="level is-mobile">
+            <div class="hand">
                 {% for card in hand %}
-                <div class="level-item">
-                    <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}">
-                        &nbsp;
-                    </a>
-                </div>
+                    <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}"></a>
                 {% endfor %}
             </div>
             {% if hint is defined %}

@@ -1,3 +1,7 @@
+.hand {
+    display: flex;
+}
+
 .card {
     background-image: url(../images/cards.jpg);
     overflow: hidden;
