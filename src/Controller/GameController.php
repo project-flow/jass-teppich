@@ -5,7 +5,9 @@ namespace App\Controller;
 
 
 use App\Repository;
+use Symfony\Component\HttpFoundation\Request;
 use function Jass\CardSet\bySuitsAndValues;
+use function Jass\CardSet\isValidCard;
 use function Jass\CardSet\suits;
 use function Jass\CardSet\values;
 use Jass\Entity\Card;
@@ -104,8 +106,18 @@ class GameController extends AbstractController
         $messageHandler = new MessageHandler();
         $game = $repository->loadGame($id);
 
+        $card = Card::shortcut($card);
+
+        if (!isValidCard($card)) {
+            return $this->redirectToRoute("game", ['id' => $id, 'error' => 'Invalid card']);
+        }
+
+        if (!$game->style->isValidCard($game->currentTrick ?? new Trick(), $game->currentPlayer->hand, $card)) {
+            return $this->redirectToRoute("game", ['id' => $id, 'error' => 'Card not allowed in this game']);
+        }
+
         $turn = new Turn();
-        $turn->card = Card::shortcut($card);
+        $turn->card = $card;
 
         $messageHandler->handle($game, $turn);
         $repository->recordMessage($id, $turn);
@@ -169,7 +181,7 @@ class GameController extends AbstractController
     /**
      * @Route("/game/{id}", name="game")
      */
-    public function game($id, Repository $repository)
+    public function game($id, Repository $repository, Request $request)
     {
         $messageHandler = new MessageHandler();
         $game = $repository->loadGame($id);
@@ -252,6 +264,7 @@ class GameController extends AbstractController
             'trick' => $cards,
             'info' => $info,
             'style' => false,
+            'error' => $request->query->get('error'),
             'hand' => ordered($game->players[0]->hand, $game->style->orderFunction()),
             'hint' => \Jass\Strategy\card($game),
             'player' => $game->currentPlayer->name

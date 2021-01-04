@@ -48,6 +48,9 @@
                     </p>
                 {% elseif hand %}
                     <h3 class="subtitle">Cards of {{ player }}</h3>
+                    {% if error %}
+                        <div class="notification is-warning">{{ error }}</div>
+                    {% endif %}
                     <div class="hand">
                         {% for card in hand %}
                             <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}"></a>
