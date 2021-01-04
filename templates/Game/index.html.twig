@@ -3,78 +3,82 @@
 <section class="section ">
     <div class="columns">
         {% if trick %}
-        <div class="column">
-            <div class="columns is-mobile">
-                <div class="column has-text-right">
-                    <h3 class="subtitle">Franz</h3>
-                    <div class="is-pulled-right card {{ trick[0]|default('empty') }}"></div>
+            <div class="column">
+                <div class="columns is-mobile">
+                    <div class="column has-text-right">
+                        <h3 class="subtitle">Hans</h3>
+                        <div class="is-pulled-right card {{ trick[3]|default('empty') }}"></div>
+                    </div>
+                    <div class="column">
+                        <h3 class="subtitle">Partner</h3>
+                        <div class="card {{ trick[2]|default('empty') }}"></div>
+                    </div>
                 </div>
-                <div class="column">
-                    <h3 class="subtitle">Heidi</h3>
-                    <div class="card {{ trick[1]|default('empty') }}"></div>
+                <div class="columns is-mobile">
+                    <div class="column has-text-right">
+                        <h3 class="subtitle">You</h3>
+                        <div class="is-pulled-right card {{ trick[0]|default('empty') }}"></div>
+                    </div>
+                    <div class="column has-text-left">
+                        <h3 class="subtitle">Heidi</h3>
+                        <div class="card {{ trick[1]|default('empty') }}"></div>
+                    </div>
                 </div>
             </div>
-            <div class="columns is-mobile">
-                <div class="column has-text-right">
-                    <h3 class="subtitle">Hans</h3>
-                    <div class="is-pulled-right card {{ trick[3]|default('empty') }}"></div>
-                </div>
-                <div class="column has-text-left">
-                    <h3 class="subtitle">Frieda</h3>
-                    <div class="card {{ trick[2]|default('empty') }}"></div>
-                </div>
-            </div>
-        </div>
         {% endif %}
         {% if info %}
-        <div class="column">
-            <p>{{ info.style }}</p>
-            {% if info.finished %}
-            <p>Game is finished</p>
-            {% else %}
-            <p>Trick {{ info.trickNumber }} of 9</p>
-            {% endif %}
-            <p>Franz & Frieda: {{ info.team1points }} Points</p>
-            <p>Heidi & Heinz: {{ info.team2points }} Points</p>
-S            {% if info.finished %}
-            <p><a href="{{ path('index') }}" class="button">New game</a> </p>
-            {% endif %}
-        </div>
+            <div class="column">
+                <p>{{ info.style }}</p>
+                {% if info.finished %}
+                    <p>Game is finished</p>
+                {% else %}
+                    <p>Trick {{ info.trickNumber }} of 9</p>
+                {% endif %}
+                <p>You & Partner: {{ info.team1points }} Points</p>
+                <p class="mb-3">Heidi & Heinz: {{ info.team2points }} Points</p>
+                {% if info.finished %}
+                    <p><a href="{{ path('index') }}" class="button">New game</a> </p>
+                {% endif %}
+                {% if trickInfo is defined and trickInfo %}
+                    <h3 class="subtitle">Trick</h3>
+                    <p>Trick winner is {{ trickInfo.winner }} with {{ trickInfo.winningCard }}</p>
+                    <p>The team wins {{ trickInfo.points }} Points.</p>
+                    <p>
+                        <a href="{{ path('game', {'id': id}) }}" class="button">Cards to {{ trickInfo.winner }}</a>
+                    </p>
+                {% elseif hand %}
+                    <h3 class="subtitle">Cards of {{ player }}</h3>
+                    <div class="hand">
+                        {% for card in hand %}
+                            <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}"></a>
+                        {% endfor %}
+                    </div>
+                    {% if hint is defined %}
+                        <div>
+                            Computer suggests {{ hint }} because {{ hint.hint }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
         {% endif %}
         {% if style %}
-        <div class="column">
-            <a href="{{ path('style', {'id': id, 'style': 'top'}) }}" class="button">Top down</a>
-            <a href="{{ path('style', {'id': id, 'style': 'bottom'}) }}" class="button">Bottom up</a>
-            <a href="{{ path('style', {'id': id, 'style': 'rose'}) }}" class="button">Trump Rose</a>
-            <a href="{{ path('style', {'id': id, 'style': 'bell'}) }}" class="button">Trump Bell</a>
-            <a href="{{ path('style', {'id': id, 'style': 'oak'}) }}" class="button">Trump Oak</a>
-            <a href="{{ path('style', {'id': id, 'style': 'shield'}) }}" class="button">Trump Shield</a>
-        </div>
+            <div class="column">
+                <a href="{{ path('style', {'id': id, 'style': 'top'}) }}" class="button">Top down</a>
+                <a href="{{ path('style', {'id': id, 'style': 'bottom'}) }}" class="button">Bottom up</a>
+                <a href="{{ path('style', {'id': id, 'style': 'rose'}) }}" class="button">Trump Rose</a>
+                <a href="{{ path('style', {'id': id, 'style': 'bell'}) }}" class="button">Trump Bell</a>
+                <a href="{{ path('style', {'id': id, 'style': 'oak'}) }}" class="button">Trump Oak</a>
+                <a href="{{ path('style', {'id': id, 'style': 'shield'}) }}" class="button">Trump Shield</a>
+            </div>
         {% endif %}
     </div>
-</section>
-    {% if trickInfo is defined and trickInfo %}
-        <section class="section has-background-info text-white">
-            <h3 class="subtitle">Trick</h3>
-            <p>Trick winner is {{ trickInfo.winner }} with {{ trickInfo.winningCard }}</p>
-            <p>The team wins {{ trickInfo.points }} Points.</p>
-            <p>
-                <a href="{{ path('game', {'id': id}) }}" class="button">Cards to {{ trickInfo.winner }}</a>
-            </p>
-        </section>
-    {% elseif hand %}
-        <section class="section has-background-info text-white">
-            <h3 class="subtitle">Cards of {{ player }}</h3>
-            <div class="hand">
-                {% for card in hand %}
-                    <a class="card {{ card }}" href="{{ path('play', {'id': id, 'card': card.toShortcut()}) }}"></a>
-                {% endfor %}
-            </div>
-            {% if hint is defined %}
-            <div>
-                Computer suggests {{ hint }} because {{ hint.hint }}
-            </div>
-            {% endif %}
-        </section>
+    {% if style %}
+        <h3 class="subtitle">Choose style with these cards:</h3>
+        <div class="hand">
+            {% for card in hand %}
+                <div class="card {{ card }}"></div>
+            {% endfor %}
+        </div>
     {% endif %}
+</section>
 {% endblock %}

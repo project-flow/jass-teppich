@@ -176,7 +176,7 @@ class GameController extends AbstractController
         if (!$game->players) {
             // if no players are setup set the up
             $setup = new PlayerSetup();
-            $setup->players = byNames('Franz,Heidi,Frieda,Hans');
+            $setup->players = byNames('You,Heidi,Partner,Hans');
             $setup->starter = $setup->players[0];
 
             $messageHandler->handle($game, $setup);
