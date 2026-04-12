@@ -33,15 +33,15 @@ class Style extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:style')->setDescription('Sets the style of the game');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
         $this->addArgument('style', InputArgument::OPTIONAL, 'Style of the game', 'topDown');
-        $this->addArgument('suit', InputArgument::OPTIONAL, 'Suit if trump is choosen', SUIT::SHIELD);
+        $this->addArgument('suit', InputArgument::OPTIONAL, 'Suit if trump is choosen', Suit::SHIELD->value);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -51,7 +51,7 @@ class Style extends Command
         $className = 'Jass\\Style\\' . ucfirst($styleName);
         if (!class_exists($className)) {
             $output->writeln('Unknown style ' . $styleName);
-            return;
+            return Command::FAILURE;
         }
 
         $strategies = [
@@ -66,7 +66,7 @@ class Style extends Command
             $trumpSuit = $input->getArgument('suit');
             if (!in_array($trumpSuit, suits())) {
                 $output->writeln('Unknown trump suit ' . $trumpSuit);
-                return;
+                return Command::FAILURE;
             }
             $message->style = new TrumpStyle($trumpSuit);
         } else {
@@ -86,6 +86,7 @@ class Style extends Command
 
         $output->writeln('Style ' . $styleName . ' is set for game ' . $gameName);
 
+        return Command::SUCCESS;
     }
 
 }

@@ -32,13 +32,13 @@ class Info extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:info')->setDescription('Information about the game');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -47,7 +47,7 @@ class Info extends Command
 
         if (!$game->players) {
             $io->warning('Players not set. Use jass:player');
-            return;
+            return Command::SUCCESS;
         }
         $names = array_map(function(PlayerEntity $player){
             return $player->name;
@@ -56,18 +56,18 @@ class Info extends Command
 
         if (!$game->style) {
             $io->warning('Game style not set. Use jass:style');
-            return;
+            return Command::SUCCESS;
         }
         $io->writeln('Game style: ' . $game->style->name);
 
         if (!$game->players[0]->hand && !$game->playedTricks) {
             $io->warning('Cards are not dealt. Use jass:deal');
-            return;
+            return Command::SUCCESS;
         }
 
         if (isReady($game) && !hasStarted($game)) {
             $io->success('Game is ready to start. Use jass:play:*');
-            return;
+            return Command::SUCCESS;
         }
 
         $io->writeln('Played tricks: ' . count($game->playedTricks));
@@ -96,6 +96,7 @@ class Info extends Command
             }
         }
 
+        return Command::SUCCESS;
     }
 
 }

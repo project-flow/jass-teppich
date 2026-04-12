@@ -29,13 +29,13 @@ class Hint extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:hint')->setDescription('Gives a hint for the ');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -51,6 +51,7 @@ class Hint extends Command
         $io->writeln('Strategy: ' . $strategyName);
         $io->writeln('Card: ' . $card);
 
+        return Command::SUCCESS;
     }
 
 }

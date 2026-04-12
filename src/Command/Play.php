@@ -36,7 +36,7 @@ class Play extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:play')->setDescription('Play a card or until a certain event');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
@@ -44,7 +44,7 @@ class Play extends Command
         $this->addArgument('card', InputArgument::OPTIONAL, 'Card. Use Shortcuts or auto', 'auto');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -114,6 +114,8 @@ class Play extends Command
             }
 
         } while (!$timeToSayGoodbye);
+
+        return Command::SUCCESS;
     }
 
 

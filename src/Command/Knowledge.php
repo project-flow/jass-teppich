@@ -25,7 +25,7 @@ class Knowledge extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:knowledge');
         $this->setDescription('Shows knowledge of a certain situation');
@@ -33,7 +33,7 @@ class Knowledge extends Command
         $this->addArgument('trick', InputArgument::REQUIRED, 'Which trick 1-9');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $game = $input->getArgument('game');
         $trick = $input->getArgument('trick');
@@ -70,6 +70,7 @@ class Knowledge extends Command
             ['potential', 'How many cards need to be played until there is a bock card ', implode(", ", $potential)]
         ]);
 
+        return Command::SUCCESS;
     }
 
 }

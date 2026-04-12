@@ -3,16 +3,13 @@
 namespace App;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
-
-    private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
     public function getCacheDir(): string
     {
@@ -34,26 +31,24 @@ class Kernel extends BaseKernel
         }
     }
 
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
+    protected function configureContainer(ContainerConfigurator $container): void
     {
-        $confDir = dirname(__DIR__) . '/config';
-        $loader->load($confDir.'/packages/*'.self::CONFIG_EXTS, 'glob');
-        if (is_dir($confDir.'/packages/'.$this->environment)) {
-            $loader->load($confDir.'/packages/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
+        $container->import('../config/{packages}/*.{php,xml,yaml,yml}');
+        if (is_dir(dirname(__DIR__).'/config/packages/'.$this->environment)) {
+            $container->import('../config/{packages}/'.$this->environment.'/**/*.{php,xml,yaml,yml}');
         }
-        $loader->load($confDir.'/services'.self::CONFIG_EXTS, 'glob');
-        $loader->load($confDir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
+        $container->import('../config/{services}.{php,xml,yaml,yml}');
+        $container->import('../config/{services}_'.$this->environment.'.{php,xml,yaml,yml}');
     }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes): void
+    protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        $confDir = dirname(__DIR__) . '/config';
-        if (is_dir($confDir.'/routes/')) {
-            $routes->import($confDir.'/routes/*'.self::CONFIG_EXTS, '/', 'glob');
+        if (is_dir(dirname(__DIR__).'/config/routes/'.$this->environment)) {
+            $routes->import('../config/{routes}/'.$this->environment.'/**/*.{php,xml,yaml,yml}');
         }
-        if (is_dir($confDir.'/routes/'.$this->environment)) {
-            $routes->import($confDir.'/routes/'.$this->environment.'/**/*'.self::CONFIG_EXTS, '/', 'glob');
+        if (is_dir(dirname(__DIR__).'/config/routes')) {
+            $routes->import('../config/{routes}/*.{php,xml,yaml,yml}');
         }
-        $routes->import($confDir.'/routes'.self::CONFIG_EXTS, '/', 'glob');
+        $routes->import('../config/{routes}.{php,xml,yaml,yml}');
     }
 }

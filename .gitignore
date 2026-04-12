@@ -9,6 +9,7 @@
 .web-server-pid
 ###< symfony/web-server-bundle ###
 .idea
+.DS_Store
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/

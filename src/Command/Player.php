@@ -29,13 +29,13 @@ class Player extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:player')->setDescription('Sets up default players');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -55,6 +55,8 @@ class Player extends Command
         $io->listing(array_map(function (PlayerEntity $player) {
             return $player->name;
         }, $game->players));
+
+        return Command::SUCCESS;
     }
 
 }

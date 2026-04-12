@@ -29,18 +29,12 @@ use Jass\Style\Trump as TrumpStyle;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route("/jwc")
- */
+#[Route('/jwc')]
 class JassWeCanController extends AbstractController
 {
-    /**
-     * @Route("/", name="jwc_create", methods={"POST"})
-     * @param Repository $repository
-     * @return JsonResponse
-     */
+    #[Route('/', name: 'jwc_create', methods: ['POST'])]
     public function create(Repository $repository)
     {
         $name = md5(uniqid());
@@ -71,12 +65,7 @@ class JassWeCanController extends AbstractController
         return $this->info($name, $repository);
     }
 
-    /**
-     * @Route("/{id}", name="jwc_info", methods={"POST"})
-     * @param string $id
-     * @param Repository $repository
-     * @return JsonResponse
-     */
+    #[Route('/{id}', name: 'jwc_info', methods: ['POST'])]
     public function info(string $id, Repository $repository)
     {
         $game = $repository->loadGame($id);
@@ -119,13 +108,7 @@ class JassWeCanController extends AbstractController
         return $trickCards;
     }
 
-    /**
-     * @Route("/{id}", name="jwc_play", methods={"POST"})
-     * @param string $id
-     * @param Request $request
-     * @param Repository $repository
-     * @return JsonResponse
-     */
+    #[Route('/{id}', name: 'jwc_play', methods: ['POST'])]
     public function play(string $id, Request $request, Repository $repository)
     {
         if ($request->getMethod() === 'OPTIONS') {
@@ -181,13 +164,7 @@ class JassWeCanController extends AbstractController
         return new JsonResponse($data, 200, ['Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'content-type']);
     }
 
-    /**
-     * @Route("/{id}/style", name="jwc_style")
-     * @param string $id
-     * @param Request $request
-     * @param Repository $repository
-     * @return JsonResponse
-     */
+    #[Route('/{id}/style', name: 'jwc_style')]
     public function style(string $id, Request $request, Repository $repository)
     {
         if ($request->getMethod() === 'OPTIONS') {

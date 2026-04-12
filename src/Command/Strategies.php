@@ -27,13 +27,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Strategies extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:strategies')->setDescription('Plays n games with two teams having different strategies');
         $this->addArgument('count', InputArgument::OPTIONAL, 'How many games should be played', 1000);
     }
 
-    public function run(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $start = microtime(true);
         $strategies = [
@@ -112,5 +112,7 @@ class Strategies extends Command
 
         $time = ($end - $start);
         $output->writeln('Runtime information: ' . (memory_get_peak_usage(true)/1024/1024) . ' MB in ' . $time . ' s');
+
+        return Command::SUCCESS;
     }
 }

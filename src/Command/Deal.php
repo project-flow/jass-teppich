@@ -28,13 +28,13 @@ class Deal extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:deal')->setDescription('Deals cards to the players');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -52,6 +52,8 @@ class Deal extends Command
         $this->repository->recordMessage($gameName, $message);
 
         $output->writeln('Cards dealt for game ' . $gameName);
+
+        return Command::SUCCESS;
     }
 
 }

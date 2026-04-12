@@ -39,13 +39,13 @@ class Replay extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:replay')->setDescription('Replays a match from a view of a player');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $gameName = $input->getArgument('game');
@@ -54,7 +54,7 @@ class Replay extends Command
 
         if (!$game->playedTricks || count($game->playedTricks) < 1) {
             $io->warning('Replay works only if at least one trick is already played. Use jass:play');
-            return;
+            return Command::SUCCESS;
         }
 
 
@@ -96,6 +96,8 @@ class Replay extends Command
         foreach ($teams as $team) {
             $io->writeln($team . ' has ' . teamPoints($team, $game) . ' points');
         }
+
+        return Command::SUCCESS;
     }
 
     private function getClassBaseName($class)

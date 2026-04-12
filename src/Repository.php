@@ -20,7 +20,7 @@ class Repository
     }
 
 
-    public function loadGame(string $name, callable $before = null, callable $after = null) : Game
+    public function loadGame(string $name, ?callable $before = null, ?callable $after = null) : Game
     {
         $game = new Game();
         $game->name = $name;

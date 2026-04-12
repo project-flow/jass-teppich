@@ -32,23 +32,19 @@ use function Jass\Trick\isFinished;
 use function Jass\Trick\playedCards;
 use function Jass\Trick\playerTurn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use function Jass\Trick\winningTurn;
 
 class GameController extends AbstractController
 {
-    /**
-     * @Route("/", name="index")
-     */
+    #[Route('/', name: 'index')]
     public function index()
     {
         $id = md5(uniqid());
         return $this->redirectToRoute("game", ['id' => $id]);
     }
 
-    /**
-     * @Route("/game/{id}/style/{style}", name="style")
-     */
+    #[Route('/game/{id}/style/{style}', name: 'style')]
     public function style($id, $style, Repository $repository)
     {
         $messageHandler = new MessageHandler();
@@ -98,9 +94,7 @@ class GameController extends AbstractController
         return $this->redirectToRoute("game", ['id' => $id]);
     }
 
-    /**
-     * @Route("/game/{id}/play/{card}", name="play")
-     */
+    #[Route('/game/{id}/play/{card}', name: 'play')]
     public function play($id, $card, Repository $repository)
     {
         $messageHandler = new MessageHandler();
@@ -125,9 +119,7 @@ class GameController extends AbstractController
         return $this->redirectToRoute("trick", ['id' => $id]);
     }
 
-    /**
-     * @Route("/game/{id}/trick", name="trick")
-     */
+    #[Route('/game/{id}/trick', name: 'trick')]
     public function trick($id, Repository $repository)
     {
         $messageHandler = new MessageHandler();
@@ -178,9 +170,7 @@ class GameController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/game/{id}", name="game")
-     */
+    #[Route('/game/{id}', name: 'game')]
     public function game($id, Repository $repository, Request $request)
     {
         $messageHandler = new MessageHandler();

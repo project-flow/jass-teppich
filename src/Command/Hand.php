@@ -27,13 +27,13 @@ class Hand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('jass:hand')->setDescription('Show cards in hand');
         $this->addArgument('game', InputArgument::REQUIRED, 'Name of the game');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $gameName = $input->getArgument('game');
         $game = $this->repository->loadGame($gameName);
@@ -42,6 +42,8 @@ class Hand extends Command
         $io->writeln('Hand of player ' . $game->currentPlayer);
         $style = $game->style ?? new TopDown();
         $io->listing(ordered($game->currentPlayer->hand, $style->orderFunction()));
+
+        return Command::SUCCESS;
     }
 
 }
